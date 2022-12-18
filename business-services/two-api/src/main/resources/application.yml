@@ -1,0 +1,34 @@
+server:
+  port: 62807
+
+spring:
+  application:
+    name: two-api-service
+  config:
+    import: "optional:configserver:http://root:s3cr3t@common:8888"
+  zipkin:
+    base-url: http://zipkin:9411
+    discovery-client-enabled: false
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery:8761/eureka}
+  instance:
+    preferIpAddress: true
+    metadata-map:
+      "prometheus.scrape": "true"
+      "prometheus.path": "/actuator/prometheus"
+      "prometheus.port": "${management.server.port}"
+      "sys.module": "two-api-service"
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'

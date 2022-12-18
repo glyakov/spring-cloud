@@ -1,0 +1,45 @@
+app:
+  user:
+    role: Default
+
+server:
+  port: 62805
+
+spring:
+  application:
+    name: one-service
+  profiles:
+    active: prod
+  config:
+    import: "optional:configserver:http://root:s3cr3t@common:8888"
+  zipkin:
+    base-url: http://zipkin:9411
+    discovery-client-enabled: false
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      two-service:
+        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 3
+        slidingWindowSize: 3
+        slowCallRateThreshold: 70.0f
+        slowCallDurationThreshold: 1s
+  ratelimiter:
+    instances:
+      two-service:
+        limitForPeriod: 2
+        limitRefreshPeriod: 1s
+        timeoutDuration: 3
+        registerHealthIndicator: true
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'

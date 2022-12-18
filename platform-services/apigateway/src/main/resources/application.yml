@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery:8761/eureka}
+  instance:
+    preferIpAddress: true
+    metadata-map:
+      "prometheus.scrape": "true"
+      "prometheus.path": "/actuator/prometheus"
+      "prometheus.port": "${management.server.port}"
+      "sys.module": "gateway"
+
+spring:
+  application:
+    name: gateway
+  zipkin:
+    base-url: http://zipkin:9411
+    discovery-client-enabled: false
+  cloud:
+    gateway:
+      routes:
+        - id: baeldung_route
+          uri: http://baeldung.com
+          predicates:
+            - Path=/baeldung/**
+          filters:
+            - RewritePath=/baeldung/(?<segment>.*),/$\{segment}
+        - id: one-service
+          uri: lb://one-service
+          predicates:
+            - Path=/one/**
+          filters:
+            - RewritePath=/one/(?<segment>.*), /$\{segment}
+        - id: two-service
+          uri: lb://two-service
+          predicates:
+            - Path=/two/**
+          filters:
+            - RewritePath=/two/(?<segment>.*), /$\{segment}
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'

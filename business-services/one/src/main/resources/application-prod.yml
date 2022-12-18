@@ -1,0 +1,12 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery:8761/eureka}
+  instance:
+    preferIpAddress: true
+    metadata-map:
+      #Integrated into Prometheus, the following data will be added to the tags before the Prometheus re tag, for example, sys. Module will become
+      "prometheus.scrape": "true"
+      "prometheus.path": "/actuator/prometheus"
+      "prometheus.port": "${management.server.port}"
+      "sys.module": "one-service"

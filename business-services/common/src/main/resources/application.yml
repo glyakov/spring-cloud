@@ -1,0 +1,23 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: common
+  zipkin:
+    base-url: http://zipkin:9411
+    discovery-client-enabled: false
+  cloud:
+    config:
+      server:
+        git:
+          uri: 'file://cloud-git-repo'
+  security:
+    user:
+      name: root
+      password: s3cr3t
+
+management:
+  endpoint:
+    health:
+      show-details: always

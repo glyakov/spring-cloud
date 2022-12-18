@@ -1,0 +1,24 @@
+server:
+#  port: 62806
+
+spring:
+  application:
+    name: two-service
+  profiles:
+    active: prod
+  config:
+    import: "optional:configserver:http://root:s3cr3t@common:8888"
+  zipkin:
+    base-url: http://zipkin:9411
+    discovery-client-enabled: false
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
